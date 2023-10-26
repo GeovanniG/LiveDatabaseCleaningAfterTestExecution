@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34009.444
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveDatabaseCleaningAfterTestExecution", "LiveDatabaseCleaningAfterTestExecution\LiveDatabaseCleaningAfterTestExecution.csproj", "{7936F770-C1AA-4B55-8B01-35A877119861}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveDatabaseCleaningAfterTestExecution.IntegrationTests", "LiveDatabaseCleaningAfterTestExecution.IntegrationTests\LiveDatabaseCleaningAfterTestExecution.IntegrationTests.csproj", "{6D2DB5E1-87C8-4211-AB32-927CE22107D5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7936F770-C1AA-4B55-8B01-35A877119861}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7936F770-C1AA-4B55-8B01-35A877119861}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7936F770-C1AA-4B55-8B01-35A877119861}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7936F770-C1AA-4B55-8B01-35A877119861}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D2DB5E1-87C8-4211-AB32-927CE22107D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D2DB5E1-87C8-4211-AB32-927CE22107D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D2DB5E1-87C8-4211-AB32-927CE22107D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D2DB5E1-87C8-4211-AB32-927CE22107D5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BC1769CC-7720-4DD0-83BC-0B9C7BB207C7}
+	EndGlobalSection
+EndGlobal
