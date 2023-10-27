@@ -1,11 +1,10 @@
 ﻿namespace LiveDatabaseCleaningAfterTestExecution.IntegrationTests;
 
-using static Testing;
 
 [TestClass]
-public class BaseTestFixture
+public class BaseTestFixture : Testing
 {
-    [TestInitialize]
+    [TestCleanup]
     public async Task TestSetup()
     {
         await ResetState();

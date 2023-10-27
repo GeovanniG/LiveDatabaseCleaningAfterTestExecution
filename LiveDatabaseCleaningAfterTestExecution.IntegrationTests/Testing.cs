@@ -3,27 +3,25 @@
 namespace LiveDatabaseCleaningAfterTestExecution.IntegrationTests;
 
 [TestClass]
-public partial class Testing
+public class Testing
 {
     private static Dictionary<ConnectionStringEnum, ITestDatabase> _databases = new();
     public static IReadOnlyDictionary<ConnectionStringEnum, ITestDatabase> Databases => _databases;
-    
     private static CustomWebApplicationFactory _webFactory = null!;
     private static IServiceScopeFactory _scopeFactory = null!;
+    private static IServiceScope _serviceScope = null!;
 
-    private readonly ITestDatabaseFactory _testDatabaseFactory;
 
-    public Testing(ITestDatabaseFactory testDatabaseFactory)
+    [ClassInitialize(InheritanceBehavior.BeforeEachDerivedClass)]
+    public static async Task RunBeforeAnyTests(TestContext context)
     {
-        _testDatabaseFactory = testDatabaseFactory;
-    }
-
-    [ClassInitialize()]
-    public async Task RunBeforeAnyTests(TestContext context)
-    {
+        _webFactory = new CustomWebApplicationFactory();
+        _scopeFactory = _webFactory.Services.GetRequiredService<IServiceScopeFactory>();
+        _serviceScope =  _scopeFactory.CreateScope();
         foreach (var connectionString in Enum.GetValues(typeof(ConnectionStringEnum)).Cast<ConnectionStringEnum>())
         {
-            var database = _testDatabaseFactory.GetInstanceByConnectionString(connectionString);
+            var database = TestDatabaseFactory.GetInstanceByConnectionString(
+                connectionString, _serviceScope.ServiceProvider);
             await database.InitialiseAsync();
             _databases.Add(connectionString, database);
         }
@@ -45,14 +43,14 @@ public partial class Testing
         catch (Exception) { }
     }
 
-    [ClassCleanup()]
-    public async Task RunAfterAnyTests()
+    [ClassCleanup(InheritanceBehavior.BeforeEachDerivedClass)]
+    public static async Task RunAfterAnyTests()
     {
         foreach (var database in _databases.Values)
         {
             await database.DisposeAsync();
         }
-
+        _serviceScope.Dispose();
         await _webFactory.DisposeAsync();
     }
 }

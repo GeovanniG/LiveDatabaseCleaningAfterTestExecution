@@ -19,7 +19,13 @@ public class SqlServerTestDatabase : ITestDatabase
     {
         _connection = new SqlConnection(_connectionString);
 
-        _respawner = await Respawner.CreateAsync(_connectionString);
+        _respawner = await Respawner.CreateAsync(_connectionString, new RespawnerOptions
+        {
+            SchemasToInclude = new[]
+            {
+                "Person"
+            }
+        });
     }
 
     public IDbConnection GetConnection()

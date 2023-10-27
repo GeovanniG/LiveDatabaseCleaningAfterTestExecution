@@ -13,11 +13,9 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         {
             foreach (var connection in ConnectionStrings.Connections())
             {
-                services.AddScoped<ITestDatabase>(
+                services.AddScoped(
                     x => new SqlServerTestDatabase(connection));
             }
-
-            services.AddScoped<ITestDatabaseFactory, TestDatabaseFactory>();
         });
     }
 }

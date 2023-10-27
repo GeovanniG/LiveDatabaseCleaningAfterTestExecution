@@ -2,20 +2,16 @@
 
 namespace LiveDatabaseCleaningAfterTestExecution.IntegrationTests;
 
-public class TestDatabaseFactory : ITestDatabaseFactory
+public static class TestDatabaseFactory
 {
-    private readonly Dictionary<ConnectionStringEnum, ITestDatabase> _testDatabaseByType;
-
-    public TestDatabaseFactory(IServiceProvider serviceProvider)
+    public static ITestDatabase GetInstanceByConnectionString(
+        ConnectionStringEnum connectionString,
+        IServiceProvider serviceProvider)
     {
-        _testDatabaseByType = new()
+        return connectionString switch
         {
-            { ConnectionStringEnum.TestDatabase, serviceProvider.GetRequiredService<SqlServerTestDatabase>() }
+            ConnectionStringEnum.TestDatabase => serviceProvider.GetRequiredService<SqlServerTestDatabase>(),
+            _ => throw new InvalidOperationException()
         };
-    }
-
-    public ITestDatabase GetInstanceByConnectionString(ConnectionStringEnum connectionString)
-    {
-        return _testDatabaseByType[connectionString];
     }
 }
