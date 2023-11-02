@@ -2,7 +2,9 @@
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using Testcontainers.MsSql;
 
 namespace LiveDatabaseCleaningAfterTestExecution.IntegrationTests;
@@ -30,9 +32,12 @@ public class SqlServerTestDatabase : ITestDatabase
             //    _connectionString, "AdventureWorks2019",
             //    _sqlServerContainer.GetConnectionString());
 
-            ScriptDatabaseAsync(
-                _connectionString, "AdventureWorks2019",
-                _sqlServerContainer.GetConnectionString(), "AdventureWorks2019");
+            //ScriptDatabase(
+            //    _connectionString, "AdventureWorks2019",
+            //    _sqlServerContainer.GetConnectionString(), "AdventureWorks2019");
+
+            //await ScriptDatabaseAsync(".", "AdventureWorks2019", "devuser", "Test1234!");
+            await ScriptDatabaseAsync(_connectionString, "AdventureWorks2019");
 
             _connection = new SqlConnection(_sqlServerContainer.GetConnectionString());
         }
@@ -42,7 +47,7 @@ public class SqlServerTestDatabase : ITestDatabase
         }
     }
 
-    static void ScriptDatabaseAsync(
+    private void ScriptDatabase(
         string sourceConnectionString, string sourceDatabaseName,
         string destinationConnectionString, string destinationDatabaseName)
     {
@@ -66,7 +71,7 @@ public class SqlServerTestDatabase : ITestDatabase
         transfer.TransferData();
     }
 
-    static async Task ScriptDatabaseAsync(string sourceConnectionString, string sourceDatabaseName,
+    private async Task ScriptDatabaseAsync(string sourceConnectionString, string sourceDatabaseName,
         string destinationConnectionString)
     {
         using (var sourceConnection = new SqlConnection(sourceConnectionString))
@@ -188,6 +193,82 @@ public class SqlServerTestDatabase : ITestDatabase
                     }
                 }
             }
+        }
+    }
+
+
+    private async Task ScriptDatabaseAsync(string sourceConnectionString, string sourceDatabase)
+    {
+        using (var sourceConnection = new SqlConnection(sourceConnectionString))
+        {
+            await sourceConnection.OpenAsync();
+            var server = new Server(new ServerConnection(sourceConnection));
+
+            // Connect to the database
+            Database database = server.Databases[sourceDatabase];
+
+            // Define the SQL script
+            string sqlScript = @$"
+            USE {sourceDatabase};
+
+            -- Retrieve information about tables
+            SELECT * FROM information_schema.tables;
+
+            -- Retrieve information about stored procedures
+            SELECT * FROM information_schema.routines WHERE routine_type = 'PROCEDURE';
+
+            -- Retrieve information about schemas
+            SELECT * FROM information_schema.schemata;
+
+            -- Retrieve information about user-defined types/functions
+            SELECT * FROM sys.types WHERE is_user_defined = 1;
+
+            -- Retrieve information about views
+            SELECT * FROM information_schema.views;
+            ";
+
+            // Execute the SQL script
+            var result = database.ExecuteWithResults(sqlScript);
+        }
+    }
+    private async Task ScriptDatabaseAsync(string sourceServer, string sourceDatabase, string userName, string password)
+    {
+        string sourceConnectionString = $"Server={sourceServer};Database={sourceDatabase};User Id={userName};Password={password};TrustServerCertificate=True;";
+
+        // Specify the path for the generated SQL script
+        string scriptFilePath = "SchemaAndObjects.sql";
+
+        // Generate SQL script for schema and objects using sqlcmd
+        string generateScriptCommand = @$"sqlcmd -S {sourceServer} -d {sourceDatabase} -U {userName} -P {password} -Q ""SET NOCOUNT ON; :setvar SQLCMDMODE DISABLED; :OUT {scriptFilePath}""";
+        var script = @$"sqlcmd -S {sourceServer} -d {sourceDatabase} -U {userName} -P {password} -Q ""USE SourceDatabase; SELECT definition FROM sys.sql_modules WHERE type_desc = 'VIEW'"" -o {scriptFilePath}";
+
+        await RunCommandAsync(generateScriptCommand);
+
+        var scriptFileName = Path.GetFileName(scriptFilePath);
+        await _sqlServerContainer.CopyAsync(scriptFilePath, $"/var/opt/mssql/script/{scriptFileName}");
+
+        await _sqlServerContainer.ExecScriptAsync("sqlcmd -S localhost -U sa -P yourStrong(!)Password -i /var/opt/mssql/script/" + scriptFileName);
+    }
+
+    private async Task RunCommandAsync(string command)
+    {
+        ProcessStartInfo psi = new ProcessStartInfo
+        {
+            FileName = "cmd.exe",
+            RedirectStandardInput = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+        };
+
+        using (Process process = new Process { StartInfo = psi })
+        {
+            process.Start();
+
+            await process.StandardInput.WriteLineAsync(command);
+            await process.StandardInput.FlushAsync();
+            process.StandardInput.Close();
+
+            await process.WaitForExitAsync();
         }
     }
 
