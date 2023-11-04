@@ -1,10 +1,10 @@
-﻿using Dapper;
+﻿using LiveDatabaseCleaningAfterTestExecution.IntegrationTestsTransactions;
 using System.Data;
 using System.Data.SqlClient;
 
 namespace LiveDatabaseCleaningAfterTestExecution.IntegrationTests;
 
-public class SqlServerTestDatabase : ITestDatabase
+public class SqlServerTestDatabase : BaseTestDatabase, ITestDatabase
 {
     private readonly string _connectionString = null!;
     private IDbConnection _connection = null!;
@@ -20,12 +20,12 @@ public class SqlServerTestDatabase : ITestDatabase
         _connection = new SqlConnection(_connectionString);
     }
 
-    public IDbConnection GetConnection()
+    public override IDbConnection GetConnection()
     {
         return _connection ?? throw new ArgumentNullException(nameof(_connection));
     }
 
-    public IDbTransaction GetTransaction()
+    public override IDbTransaction GetTransaction()
     {
         return _transaction ?? throw new ArgumentNullException(nameof(_transaction));
     }

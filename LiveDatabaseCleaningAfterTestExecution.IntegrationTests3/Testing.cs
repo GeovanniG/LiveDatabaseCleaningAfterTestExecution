@@ -6,11 +6,11 @@ namespace LiveDatabaseCleaningAfterTestExecution.IntegrationTests;
 public class Testing
 {
     private static Dictionary<ConnectionStringEnum, ITestDatabase> _databases = new();
-    public static IReadOnlyDictionary<ConnectionStringEnum, ITestDatabase> Databases => _databases;
     private static CustomWebApplicationFactory _webFactory = null!;
     private static IServiceScopeFactory _scopeFactory = null!;
     private static IServiceScope _serviceScope = null!;
 
+    public static IReadOnlyDictionary<ConnectionStringEnum, ITestDatabase> Databases => _databases;
 
     [ClassInitialize(InheritanceBehavior.BeforeEachDerivedClass)]
     public static void RunBeforeAnyTests(TestContext context)
@@ -18,6 +18,7 @@ public class Testing
         _webFactory = new CustomWebApplicationFactory();
         _scopeFactory = _webFactory.Services.GetRequiredService<IServiceScopeFactory>();
         _serviceScope = _scopeFactory.CreateScope();
+
         foreach (var connectionString in Enum.GetValues(typeof(ConnectionStringEnum)).Cast<ConnectionStringEnum>())
         {
             var database = TestDatabaseFactory.GetInstanceByConnectionString(
@@ -25,10 +26,6 @@ public class Testing
             database.Initialize();
             _databases.Add(connectionString, database);
         }
-
-        _webFactory = new CustomWebApplicationFactory();
-
-        _scopeFactory = _webFactory.Services.GetRequiredService<IServiceScopeFactory>();
     }
 
     public static void StartState()

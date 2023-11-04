@@ -15,16 +15,14 @@ public class UnitTest1 : BaseTestFixture
         var businessEntityId = 1;
         var database = Databases.Where(x => x.Key == ConnectionStringEnum.TestDatabase)
             .Select(x => x.Value).First();
-        await database.GetConnection().ExecuteAsync(
+        await database.ExecuteWithTransactionAsync(
             "UPDATE Person.EmailAddress SET EmailAddress = @EmailAddress WHERE BusinessEntityID = @BusinessEntityId",
-            new { EmailAddress = updatedEmailAddress, BusinessEntityId = businessEntityId },
-            transaction: database.GetTransaction());
+            new { EmailAddress = updatedEmailAddress, BusinessEntityId = businessEntityId });
 
         // Act
-        var email = await database.GetConnection().QueryFirstOrDefaultAsync<Email>(
+        var email = await database.QueryFirstOrDefaultWithTransactionAsync<Email>(
             "SELECT BusinessEntityID, EmailAddressID, EmailAddress, ModifiedDate FROM Person.EmailAddress WHERE BusinessEntityID = @BusinessEntityId",
-            new { BusinessEntityId = businessEntityId },
-            transaction: database.GetTransaction());
+            new { BusinessEntityId = businessEntityId });
 
         // Assert
         email.Should().NotBeNull();
