@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34009.444
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveDatabaseCleaningAfterTestExecution", "LiveDatabaseCleaningAfterTestExecution\LiveDatabaseCleaningAfterTestExecution.csproj", "{7936F770-C1AA-4B55-8B01-35A877119861}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveDatabaseCleaningAfterTestExecution", "LiveDatabaseCleaningAfterTestExecution\LiveDatabaseCleaningAfterTestExecution.csproj", "{7936F770-C1AA-4B55-8B01-35A877119861}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveDatabaseCleaningAfterTestExecution.IntegrationTestsWithRespawn.NotWorking", "LiveDatabaseCleaningAfterTestExecution.IntegrationTests\LiveDatabaseCleaningAfterTestExecution.IntegrationTestsWithRespawn.NotWorking.csproj", "{6D2DB5E1-87C8-4211-AB32-927CE22107D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveDatabaseCleaningAfterTestExecution.IntegrationTestsWithRespawn.NotWorking", "LiveDatabaseCleaningAfterTestExecution.IntegrationTests\LiveDatabaseCleaningAfterTestExecution.IntegrationTestsWithRespawn.NotWorking.csproj", "{6D2DB5E1-87C8-4211-AB32-927CE22107D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveDatabaseCleaningAfterTestExecution.IntegrationTestsWithTestcontainers", "LiveDatabaseCleaningAfterTestExecution.IntegrationTests2\LiveDatabaseCleaningAfterTestExecution.IntegrationTestsWithTestcontainers.csproj", "{BE3C2DCC-9A86-4BE1-9AFE-709FA6AB104C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveDatabaseCleaningAfterTestExecution.IntegrationTestsWithTestcontainers", "LiveDatabaseCleaningAfterTestExecution.IntegrationTests2\LiveDatabaseCleaningAfterTestExecution.IntegrationTestsWithTestcontainers.csproj", "{BE3C2DCC-9A86-4BE1-9AFE-709FA6AB104C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveDatabaseCleaningAfterTestExecution.IntegrationTestsTransactions", "LiveDatabaseCleaningAfterTestExecution.IntegrationTests3\LiveDatabaseCleaningAfterTestExecution.IntegrationTestsTransactions.csproj", "{2EECC81F-860D-4497-84D5-02C5EC84FB32}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{BE3C2DCC-9A86-4BE1-9AFE-709FA6AB104C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE3C2DCC-9A86-4BE1-9AFE-709FA6AB104C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE3C2DCC-9A86-4BE1-9AFE-709FA6AB104C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EECC81F-860D-4497-84D5-02C5EC84FB32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EECC81F-860D-4497-84D5-02C5EC84FB32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EECC81F-860D-4497-84D5-02C5EC84FB32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EECC81F-860D-4497-84D5-02C5EC84FB32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
