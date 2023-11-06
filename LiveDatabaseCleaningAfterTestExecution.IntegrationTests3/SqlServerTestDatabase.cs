@@ -1,5 +1,4 @@
-﻿using LiveDatabaseCleaningAfterTestExecution.IntegrationTestsTransactions;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 
 namespace LiveDatabaseCleaningAfterTestExecution.IntegrationTests;
