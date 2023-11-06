@@ -13,8 +13,10 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         {
             foreach (var connection in ConnectionStrings.Connections())
             {
-                services.AddScoped(
-                    x => new SqlServerTestDatabase(connection));
+                services.AddScoped(x => new SqlServerTestDatabase(connection));
+                services.AddScoped<ITestDatabase>(x => new SqlServerTestDatabase(connection));
+                services.AddScoped(x => new SqlServerTestDatabaseTransactions(new SqlServerTestDatabase(connection)));
+                services.AddScoped<ITestDatabaseTransactions>(x => new SqlServerTestDatabaseTransactions(new SqlServerTestDatabase(connection)));
             }
         });
     }

@@ -3,18 +3,25 @@ using System.Data;
 
 namespace LiveDatabaseCleaningAfterTestExecution.IntegrationTests;
 
-public abstract class BaseTestDatabase
+public class SqlServerTestDatabaseTransactions : ITestDatabaseTransactions
 {
+    private readonly ITestDatabase _testDatabase;
+
+    public SqlServerTestDatabaseTransactions(ITestDatabase testDatabase)
+    {
+        _testDatabase = testDatabase;
+    }
+
     public async Task<int> ExecuteWithTransactionAsync(string sql, object param = null, int? commandTimeout = null, CommandType? commandType = null)
     {
         try
         {
-            var affectedRows = await GetConnection().ExecuteAsync(sql, param, GetTransaction(), commandTimeout, commandType);
+            var affectedRows = await _testDatabase.GetConnection().ExecuteAsync(sql, param, _testDatabase.GetTransaction(), commandTimeout, commandType);
             return affectedRows;
         }
         catch
         {
-            GetTransaction().Rollback();
+            _testDatabase.GetTransaction().Rollback();
             throw;
         }
     }
@@ -23,17 +30,13 @@ public abstract class BaseTestDatabase
     {
         try
         {
-            var result = await GetConnection().QueryFirstOrDefaultAsync<T>(sql, param, GetTransaction(), commandTimeout, commandType);
+            var result = await _testDatabase.GetConnection().QueryFirstOrDefaultAsync<T>(sql, param, _testDatabase.GetTransaction(), commandTimeout, commandType);
             return result;
         }
         catch
         {
-            GetTransaction().Rollback();
+            _testDatabase.GetTransaction().Rollback();
             throw;
         }
     }
-
-    public abstract IDbConnection GetConnection();
-
-    public abstract IDbTransaction GetTransaction();
 }
